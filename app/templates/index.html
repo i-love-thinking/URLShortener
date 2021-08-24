@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.ico' %}" />
+    <base href="/static/" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
+    <title>Document</title>
+    <script defer src="https://unpkg.com/alpinejs@3.2.3/dist/cdn.min.js"></script>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container" x-data="url_string">
+        <div class="field">
+          <label class="label">請輸入網址</label>
+          <div class="control">
+            <input class="input" type="text" placeholder="URL input" x-model="url" />
+          </div>
+        </div>
+        <h1 x-text="shortenedUrl"></h1>
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button is-link" @click="submit_data">Submit</button>
+          </div>
+          <div class="control">
+            <button class="button is-link is-light">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+      document.addEventListener('alpine:init', () => {
+        Alpine.data('url_string', () => ({
+          url: '',
+          shortenedUrl: '',
+          async submit_data() {
+            console.log(this.url)
+            data = { originUrl: this.url }
+            let res = await fetch('/api/create_shorten_url', {
+              method: 'POST',
+              body: JSON.stringify(data),
+              headers: new Headers({
+                'Content-Type': 'application/json',
+              }),
+            })
+            res = await res.json()
+            console.log(`res: ${res.shortenedUrl}`)
+            this.shortenedUrl = 'Your Short URL is http://localhost:8000/' + res.shortenedUrl
+            this.url = ''
+          },
+        }))
+      })
+    </script>
+  </body>
+</html>
