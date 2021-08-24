@@ -14,3 +14,7 @@ Create a python virtual environment and install requirement packages
 ## Start server
 
 `python manage.py runserver`
+
+# Run test
+
+`python manage.py test`
